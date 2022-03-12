@@ -36,6 +36,7 @@ They can also get all posts by other users, get all all posts of their own, get 
 
 ### Test plan:
 User part:
+
     * Registration test
     * Login test
     * Get user information test
@@ -49,6 +50,7 @@ User part:
 
 
 Post part:
+
     * Create post test
     * Update post test
     * Read post test
