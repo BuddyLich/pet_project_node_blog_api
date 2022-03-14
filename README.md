@@ -14,18 +14,19 @@ In terms of blogs, users can create/read/update/delete the post they created.
 They can also get all posts by other users, get all all posts of their own, get all posts by a specific user by username. 
 
 ### Models:
-    Post:
-        * title
-        * body
-        * createdAt
-        * lastUpdatedAt
-        * user
+Post:
+* title
+* body
+* createdAt
+* lastUpdatedAt
+* user
 
-    User:
-        * email
-        * username
-        * tokens
-        * posts
+User:
+* email
+* username
+* password
+* tokens
+* posts
 
 ### Other details:
 1. Pagination will be included for all "get all posts from xxx" feature
@@ -37,28 +38,28 @@ They can also get all posts by other users, get all all posts of their own, get 
 ### Test plan:
 User part:
 
-    * Registration test
-    * Login test
-    * Get user information test
-    * Logout test
-    * Logout All test
-    * Account Deletion test
+* Registration test
+* Login test
+* Get user information test
+* Logout test
+* Logout All test
+* Account Deletion test
 
-    * Test for attempt to login nonexisting user
-    * Test for login with wrong password
-    * Test for attempt to register a new account with username/email that already exists
+* Test for attempt to login nonexisting user
+* Test for login with wrong password
+* Test for attempt to register a new account with username/email that already exists
 
 
 Post part:
 
-    * Create post test
-    * Update post test
-    * Read post test
-    * Delete post test
+* Create post test
+* Update post test
+* Read post test
+* Delete post test
 
-    * Get own posts test
-    * Get all posts test
-    * Get all posts by a specific users test
+* Get own posts test
+* Get all posts test
+* Get all posts by a specific users test
 
-    * Test for attempt to update other user's post
-    * Test for attempt to delete other user's post
+* Test for attempt to update other user's post
+* Test for attempt to delete other user's post
