@@ -1,11 +1,14 @@
 const express = require('express')
 const mongoose = require('mongoose')
 
-const app = express()
+const userRoute = require('./routers/user')
 
+mongoose.connect(process.env.MONGODB_URL)
+
+const app = express()
 // Automatically parses all json to object
 app.use(express.json())
-mongoose.connect(process.env.MONGODB_URL)
+app.use(userRoute)
 
 module.exports = app
 const port = process.env.PORT || 3000
