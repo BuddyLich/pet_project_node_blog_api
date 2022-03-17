@@ -10,7 +10,6 @@ const app = express()
 app.use(express.json())
 app.use(userRoute)
 
-module.exports = app
 const port = process.env.PORT || 3000
 
 app.listen(port, () => {
