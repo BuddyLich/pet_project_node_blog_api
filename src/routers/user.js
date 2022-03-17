@@ -10,8 +10,8 @@ router.post('/users', async (req, res) => {
 
     try {
         await user.save()
-        const token = user.generateAuthToken()
-        res.status(201).send({ user, token }) 
+        const token = await user.generateAuthToken()
+        res.status(201).send({ user, token })
     } catch (e) {
         // temporary fix, need to customise the error msg later
         res.status(400).send({error: e.message})
@@ -38,15 +38,7 @@ router.get('/users/:username', async (req, res) => {
     if (!user) {
         return res.status(404).send()
     }
-
-    userPostNum = await Post.count({ user: user._id })
-
-    const userInfo =  {
-        username: user.username,
-        email: user.email,
-        createdPosts: userPostNum
-    }
-    return res.status(200).send(userInfo)
+    return res.status(200).send(user)
 })
 
 module.exports = router
