@@ -28,6 +28,7 @@ router.post('/users/login', async (req, res) => {
     }
 })
 
+// incomplete
 router.get('/users/:username', async (req, res) => {
     if (!req.params.username) {
         return res.status(400).send({ error: "Username cannot be empty"})
@@ -38,7 +39,16 @@ router.get('/users/:username', async (req, res) => {
     if (!user) {
         return res.status(404).send()
     }
-    return res.status(200).send(user)
+
+    // =================
+    // definitely not a good practice. Will be fixed later.
+    await user.populate('posts')
+    userJSON = user.toJSON()
+    userJSON["numberOfPost"] = user.posts.length
+
+    return res.status(200).send(userJSON)
+    // ===================
+    
 })
 
 module.exports = router

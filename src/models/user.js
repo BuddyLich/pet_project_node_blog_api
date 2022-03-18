@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const Schemma = mongoose.Schema
 const validator = require('validator')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
@@ -43,9 +42,6 @@ const userSchema = new mongoose.Schema({
     }]
 }, {
     timestamps: true
-}, {
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true }
 })
 
 // Setup the relationship between User and Post
@@ -73,7 +69,7 @@ userSchema.statics.findByCredentials = async (email, password) => {
 
 userSchema.methods.generateAuthToken = async function () {
     const user = this
-    const token = jwt.sign({ _id: user._id.toString() }, process.env.TOKENSIGNATURE)
+    const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET)
 
     user.tokens = user.tokens.concat({ token })
     await user.save()
@@ -101,6 +97,6 @@ userSchema.methods.toJSON = function () {
     return userObject
 }
 
-const User = mongoose.model('User', userSchema)
+const User = mongoose.model('User', userSchema, 'User')
 
 module.exports = User
