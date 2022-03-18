@@ -6,7 +6,7 @@ const postSchema = new mongoose.Schema({
         trim: true,
         required: true,
         maxLength: 60,
-        minlength: 10
+        minlength: 4
     },
     body: {
         type: String,
@@ -24,6 +24,6 @@ const postSchema = new mongoose.Schema({
     timestamps: true
 })
 
-const Post = mongoose.model('Post', postSchema)
+const Post = mongoose.model('Post', postSchema, 'Post')
 
 module.exports = Post
