@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const Schemma = mongoose.Schema
 const validator = require('validator')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
@@ -39,9 +40,12 @@ const userSchema = new mongoose.Schema({
             type: String,
             required: true
         }
-    }],
+    }]
 }, {
     timestamps: true
+}, {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 })
 
 // Setup the relationship between User and Post
