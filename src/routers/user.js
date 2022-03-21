@@ -19,6 +19,7 @@ router.post('/users', async (req, res) => {
     }
 })
 
+
 router.post('/users/login', async (req, res) => {
     try {
         const user = await User.findByCredentials(req.body.email, req.body.password)
@@ -28,6 +29,7 @@ router.post('/users/login', async (req, res) => {
         res.status(400).send({error: e.message})
     }
 })
+
 
 router.post('/users/logout', auth, async (req, res) => {
     try {
@@ -54,6 +56,13 @@ router.post('/users/logoutAll', auth, async (req, res) => {
     }
 })
 
+
+// incomplete
+router.get('/users/me', auth, async (req, res) => {
+    res.send(req.user)
+})
+
+
 // incomplete
 router.get('/users/:username', async (req, res) => {
     if (!req.params.username) {
@@ -75,6 +84,37 @@ router.get('/users/:username', async (req, res) => {
     return res.status(200).send(userJSON)
     // ===================
     
+})
+
+
+router.patch('/users/me', auth, async (req, res) => {
+    const updates = Object.keys(req.body)
+    const allowUpdates = Object.keys(User.schema.obj)
+    const isValidOperation = updates.every(update => allowUpdates.includes(update))
+
+    if (!isValidOperation) {
+        return res.status(400).send({ error: "Invaid updates." })
+    }
+
+    try {
+        const user = req.user
+        updates.forEach((update => {
+            user[update] = req.body[update]
+        }))
+
+        await user.save()
+        // =================
+        // definitely not a good practice. Will be fixed later.
+        await user.populate('posts')
+        userJSON = user.toJSON()
+        userJSON["numberOfPost"] = user.posts.length
+
+        return res.status(200).send(userJSON)
+    // ===================
+    } catch (e) {
+        res.status(500).send(e)
+    }
+
 })
 
 module.exports = router
