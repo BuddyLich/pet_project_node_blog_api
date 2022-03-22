@@ -57,9 +57,25 @@ router.get('/posts/:id', auth, async (req, res) => {
             return res.status(404).send()
         }
 
-        res.send(post)
+        return res.send(post)
     } catch (e) {
-        res.status(500).send(e)
+        return res.status(500).send(e)
+    }
+})
+
+router.delete('/posts/:id', auth, async (req, res) => {
+    const _id = req.params.id 
+    try {
+        const post = await Post.findOne({ _id, user: req.user._id })
+        if (!post) {
+            return res.status(404).send()
+        }
+
+        await post.remove()
+        return res.send()
+
+    } catch (e) {
+        return res.status(500).send(e)
     }
 })
 
