@@ -53,7 +53,7 @@ router.patch('/posts/:id', auth, async (req, res) => {
 
 router.get('/posts/:id', auth, async (req, res) => {
     try {
-        const post = await Post.findById(req.params.id)
+        const post = await Post.findById(req.params.id).populate('user', 'username')
         if (!post) {
             return res.status(404).send()
         }
@@ -89,6 +89,7 @@ router.get('/posts', auth, async (req, res) => {
         .sort(sort)
         .limit(req.query.limit)
         .skip(req.query.skip)
+        .populate('user', 'username')
 
         return res.send(posts)
     } catch (e) {
