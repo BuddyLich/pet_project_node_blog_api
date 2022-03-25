@@ -57,9 +57,10 @@ router.post('/users/logoutAll', auth, async (req, res) => {
 })
 
 
-// incomplete
 router.get('/users/me', auth, async (req, res) => {
-    res.send(req.user)
+    // populate the user to allow the toJSON() function to read user.posts
+    await req.user.populate('posts')
+    return res.send(req.user)
 })
 
 
@@ -75,15 +76,8 @@ router.get('/users/:username', async (req, res) => {
         return res.status(404).send()
     }
 
-    // =================
-    // definitely not a good practice. Will be fixed later.
     await user.populate('posts')
-    userJSON = user.toJSON()
-    userJSON["numberOfPost"] = user.posts.length
-
-    return res.status(200).send(userJSON)
-    // ===================
-    
+    return user    
 })
 
 
@@ -103,14 +97,9 @@ router.patch('/users/me', auth, async (req, res) => {
         }))
 
         await user.save()
-        // =================
-        // definitely not a good practice. Will be fixed later.
-        await user.populate('posts')
-        userJSON = user.toJSON()
-        userJSON["numberOfPost"] = user.posts.length
 
-        return res.status(200).send(userJSON)
-    // ===================
+        await user.populate('posts')
+        return user
     } catch (e) {
         res.status(500).send(e)
     }

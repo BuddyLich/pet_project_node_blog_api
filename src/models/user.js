@@ -94,6 +94,10 @@ userSchema.methods.toJSON = function () {
     delete userObject.tokens
     delete userObject.updatedAt
 
+    // Note: it is essential to populate user to get user.posts
+    // , otherwise user.posts will be undefined
+    userObject["numberOfPosts"] = user.posts.length
+
     return userObject
 }
 
