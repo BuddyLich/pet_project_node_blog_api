@@ -5,7 +5,6 @@ const auth = require('../middleware/auth')
 
 const router = new express.Router()
 
-// Incomplete
 router.post('/users', async (req, res) => {
     const user = new User(req.body)
 
@@ -14,7 +13,6 @@ router.post('/users', async (req, res) => {
         const token = await user.generateAuthToken()
         res.status(201).send({ user, token })
     } catch (e) {
-        // temporary fix, need to customise the error msg later
         res.status(400).send({error: e})
     }
 })

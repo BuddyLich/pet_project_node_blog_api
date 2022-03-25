@@ -96,6 +96,9 @@ userSchema.methods.toJSON = function () {
 
     // Note: it is essential to populate user to get user.posts
     // , otherwise user.posts will be undefined
+    if (!user.posts) {
+        throw new Error('You need to populate the user before sending it.')
+    }
     userObject["numberOfPosts"] = user.posts.length
 
     return userObject
