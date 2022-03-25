@@ -1,5 +1,6 @@
 const express = require('express')
 const Post = require('../models/post')
+const User= require('../models/user')
 const auth = require('../middleware/auth')
 const router = new express.Router()
 
@@ -63,8 +64,42 @@ router.get('/posts/:id', auth, async (req, res) => {
     }
 })
 
+router.get('/posts', auth, async (req, res) => {
+    const match = {}
+    const sort = {}
+
+    if (req.query.username) {
+        match.user = await User.findOne({ username: req.query.username })
+    }
+
+    // An example of sortBy query:
+    // /posts?sortBy=createdAt:asc
+
+    // The function will check if sortBy exists in req.query
+    // Then it will get the sort condition (createdAt or updatedAt)
+    // At the same time, it will also check if the condition is desc or asc
+    // eventually, the result will refelect on the variable sort
+    if (req.query.sortBy) {
+        const parts = req.query.sortBy.split(':')
+        sort[parts[0]] = parts[1] === 'desc' ? -1 : 1 
+    }
+
+    try {
+        const posts = await Post.find({match})
+        .sort(sort)
+        .limit(req.query.limit)
+        .skip(req.query.skip)
+
+        return res.send(posts)
+    } catch (e) {
+        res.status(500).send(e)
+    }
+
+
+})
+
 router.delete('/posts/:id', auth, async (req, res) => {
-    const _id = req.params.id 
+    const _id = req.params.id
     try {
         const post = await Post.findOne({ _id, user: req.user._id })
         if (!post) {
