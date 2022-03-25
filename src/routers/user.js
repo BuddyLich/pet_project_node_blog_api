@@ -15,7 +15,7 @@ router.post('/users', async (req, res) => {
         res.status(201).send({ user, token })
     } catch (e) {
         // temporary fix, need to customise the error msg later
-        res.status(400).send({error: e.message})
+        res.status(400).send({error: e})
     }
 })
 
@@ -26,7 +26,7 @@ router.post('/users/login', async (req, res) => {
         const token = await user.generateAuthToken()
         res.send({ user, token })
     } catch (e) {
-        res.status(400).send({error: e.message})
+        res.status(400).send({error: e})
     }
 })
 
@@ -64,7 +64,6 @@ router.get('/users/me', auth, async (req, res) => {
 })
 
 
-// incomplete
 router.get('/users/:username', async (req, res) => {
     if (!req.params.username) {
         return res.status(400).send({ error: "Username cannot be empty"})

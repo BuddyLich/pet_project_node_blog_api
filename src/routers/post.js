@@ -78,7 +78,7 @@ router.get('/posts', auth, async (req, res) => {
     // The function will check if sortBy exists in req.query
     // Then it will get the sort condition (createdAt or updatedAt)
     // At the same time, it will also check if the condition is desc or asc
-    // eventually, the result will refelect on the variable sort
+    // eventually, the result will refelect on the variable “sort”
     if (req.query.sortBy) {
         const parts = req.query.sortBy.split(':')
         sort[parts[0]] = parts[1] === 'desc' ? -1 : 1 
