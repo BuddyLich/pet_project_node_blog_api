@@ -74,7 +74,7 @@ router.get('/users/:username', async (req, res) => {
     }
 
     await user.populate('posts')
-    return user    
+    return res.send(user)    
 })
 
 
