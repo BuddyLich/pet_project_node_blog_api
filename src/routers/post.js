@@ -69,9 +69,9 @@ router.get('/posts', auth, async (req, res) => {
     const sort = {}
 
     if (req.query.username) {
-        match.user = await User.findOne({ username: req.query.username })
+        const user = await User.findOne({ username: req.query.username })
+        match.user = user._id
     }
-
     // An example of sortBy query:
     // /posts?sortBy=createdAt:asc
 
@@ -85,7 +85,7 @@ router.get('/posts', auth, async (req, res) => {
     }
 
     try {
-        const posts = await Post.find({match})
+        const posts = await Post.find(match)
         .sort(sort)
         .limit(req.query.limit)
         .skip(req.query.skip)
@@ -95,8 +95,6 @@ router.get('/posts', auth, async (req, res) => {
     } catch (e) {
         res.status(500).send(e)
     }
-
-
 })
 
 router.delete('/posts/:id', auth, async (req, res) => {
