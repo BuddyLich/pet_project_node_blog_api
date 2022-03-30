@@ -131,7 +131,21 @@ test('Should not be able to update profile when not authenticated', async () => 
     await request(app)
     .patch('/users/me')
     .send({
-        email: 'test@example.com',
+        email: 'test@example.com'
     })
     .expect(401)
+})
+
+test('Should delete the current user', async () => {
+    await request(app)
+        .delete('/users/me')
+        .set('Authorization', `Bearer ${user1.tokens[0].token}`)
+        .expect(200)
+    
+    const user = await User.findOne({ username: user1.username })
+    expect(user).toBeNull()
+})
+
+test('Should not be able to delete user without authentication', async () => {
+    await request(app).delete('/users/me').expect(401)
 })
