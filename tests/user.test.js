@@ -78,3 +78,37 @@ test('Should logout all user tokens', async () => {
     const user = await User.findOne({ username: user2.username })
     expect(user.tokens.length).toBe(0)
 })
+
+test('Should receive logged in user information', async () => {
+    const response = await request(app).get('/users/me')
+        .set('Authorization', `Bearer ${user1.tokens[0].token}`)
+        .send()
+        .expect(200)
+
+    expect({ 
+        username: response.body.username,
+        email: response.body.email 
+    }).toEqual({
+        username: user1.username,
+        email: user1.email
+    })
+})
+
+test('Should not get current user info without authentication', async () => {
+    await request(app).get('/users/me').send().expect(401)
+})
+
+test('Shoud get user profile with username', async () => {
+    const response = await request(app)
+        .get(`/users/${user2.username}`)
+        .send()
+        .expect(200)
+
+    expect({ 
+        username: response.body.username,
+        email: response.body.email 
+    }).toEqual({
+        username: user2.username,
+        email: user2.email
+    })
+})
