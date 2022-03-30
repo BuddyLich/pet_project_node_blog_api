@@ -33,7 +33,12 @@ test('Should login existing user', async () => {
         password: user1.password
     }).expect(200)
 
-    user = await User.findOne({ username: user1.username })
+    await request(app).post('/users/login').send({
+        email: user1.email,
+        password: user1.password
+    }).expect(200)
+
+    const user = await User.findOne({ username: user1.username })
     expect(response.body.token).toBe(user.tokens[1].token)
 })
 
@@ -42,4 +47,34 @@ test('Should not login nonexisting user', async () => {
         email: 'test@example.com',
         password: 'randomPSWD123'
     }).expect(400)
+})
+
+test('Should logout user', async () => {
+    await request(app)
+        .post('/users/logout')
+        .set('Authorization', `Bearer ${user1.tokens[0].token}`)
+        .send()
+        .expect(200)
+
+    const user = await User.findOne({ username: user1.username })
+    expect(user.tokens.length).toBe(0)
+})
+
+test('Should logout all user tokens', async () => {
+    // login user2 three times and create more tokens
+    for (i=0;i<3;i++) {
+        await request(app).post('/users/login').send({
+            email: user2.email,
+            password: user2.password
+        }).expect(200)
+    }
+
+    await request(app)
+        .post('/users/logoutAll')
+        .set('Authorization', `Bearer ${user2.tokens[0].token}`)
+        .send()
+        .expect(200)
+
+    const user = await User.findOne({ username: user2.username })
+    expect(user.tokens.length).toBe(0)
 })
