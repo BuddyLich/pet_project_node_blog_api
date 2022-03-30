@@ -112,3 +112,26 @@ test('Shoud get user profile with username', async () => {
         email: user2.email
     })
 })
+
+test('Should update current user profile', async () => {
+    const updatedEmail = 'test@example.com'
+    await request(app)
+        .patch('/users/me')
+        .set('Authorization', `Bearer ${user1.tokens[0].token}`)
+        .send({
+            email: updatedEmail,
+        })
+        .expect(200)
+        
+    const user = await User.findOne({ username: user1.username })
+    expect(user.email).toBe(updatedEmail)
+})
+
+test('Should not be able to update profile when not authenticated', async () => {
+    await request(app)
+    .patch('/users/me')
+    .send({
+        email: 'test@example.com',
+    })
+    .expect(401)
+})
