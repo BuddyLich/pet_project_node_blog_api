@@ -2,7 +2,7 @@ const request = require('supertest')
 const jwt = require('jsonwebtoken')
 const app = require('../src/app')
 const User = require('../src/models/user')
-const { userOneId, user1, setupDB } = require('./fixtures/db')
+const { user1, user2, setupDB } = require('./fixtures/db')
 
 beforeEach(setupDB)
 
@@ -25,4 +25,21 @@ test('Should create a new user', async () => {
     })
 
     expect(user.password).not.toBe('testtest567')
+})
+
+test('Should login existing user', async () => {
+    const response = await request(app).post('/users/login').send({
+        email: user1.email,
+        password: user1.password
+    }).expect(200)
+
+    user = await User.findOne({ username: user1.username })
+    expect(response.body.token).toBe(user.tokens[1].token)
+})
+
+test('Should not login nonexisting user', async () => {
+    await request(app).post('/users/login').send({
+        email: 'test@example.com',
+        password: 'randomPSWD123'
+    }).expect(400)
 })

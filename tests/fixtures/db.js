@@ -73,9 +73,8 @@ const setupDB = async () => {
     await new Post(post5).save()
 }
 
-module.exports = {
-    userOneId, user1,
-    userTwoId, user2,
+module.exports = { 
+    user1, user2,
     post1, post2, post3, post4, post5,
     setupDB
 }
