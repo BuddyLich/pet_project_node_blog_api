@@ -96,7 +96,7 @@ router.patch('/users/me', auth, async (req, res) => {
         await user.save()
 
         await user.populate('posts')
-        return user
+        return res.send(user)
     } catch (e) {
         res.status(500).send(e)
     }
