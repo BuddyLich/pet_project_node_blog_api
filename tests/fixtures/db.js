@@ -59,17 +59,38 @@ const post5 = {
     user: user2._id
 }
 
+const posts = [post1, post2, post3, post4, post5]
+
+// A sleep function fron stack overflow
+const sleep = async () => {
+    await new Promise((resolve)=>setTimeout(() => {
+        resolve();
+    }, 5)); 
+}
+
 const setupDB = async () => {
     await User.deleteMany()
     await Post.deleteMany()
 
     await new User(user1).save()
     await new User(user2).save()
-
+    
+    // The createdAt field isn't accurate enough.
+    // the post2 and post3 might have the same createdAt value,
+    // since they were almost created at the same time.
+    // Therefore, the sleep() function is adopted so that the created time difference can be bigger.
     await new Post(post1).save()
+    await sleep()
+
     await new Post(post2).save()
+    await sleep()
+
     await new Post(post3).save()
+    await sleep()
+
     await new Post(post4).save()
+    await sleep()
+
     await new Post(post5).save()
 }
 
