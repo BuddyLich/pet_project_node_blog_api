@@ -70,6 +70,11 @@ router.get('/posts', async (req, res) => {
 
     if (req.query.username) {
         const user = await User.findOne({ username: req.query.username })
+        
+        if (!user) {
+            return res.status(404).send()
+        }
+        
         match.user = user._id
     }
     // An example of sortBy query:
