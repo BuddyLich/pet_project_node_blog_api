@@ -33,10 +33,14 @@ router.patch('/posts/:id', auth, async (req, res) => {
     }
     
     try {
-        const post = await Post.findOne({ _id, user: req.user._id })
+        const post = await Post.findOne({ _id })
 
         if (!post) {
             return res.status(404).send()
+        }
+
+        if (!post.user.equals(req.user._id)) {
+            return res.status(401).send()
         }
         
         updates.forEach((update) => {
