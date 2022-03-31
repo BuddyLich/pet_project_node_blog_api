@@ -89,6 +89,14 @@ router.get('/posts', async (req, res) => {
         sort[parts[0]] = parts[1] === 'desc' ? -1 : 1 
     }
 
+    if (req.query.limit && isNaN(req.query.limit)) {
+        return res.status(400).send({Error: "Limit should be a number"})
+    }
+
+    if (req.query.skip && isNaN(req.query.skip)) {
+        return res.status(400).send({Error: "Skip should be a number"})
+    }
+
     try {
         const posts = await Post.find(match)
         .sort(sort)
