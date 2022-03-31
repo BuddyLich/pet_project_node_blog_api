@@ -51,7 +51,7 @@ router.patch('/posts/:id', auth, async (req, res) => {
     }
 })
 
-router.get('/posts/:id', auth, async (req, res) => {
+router.get('/posts/:id', async (req, res) => {
     try {
         const post = await Post.findById(req.params.id).populate('user', 'username')
         if (!post) {
