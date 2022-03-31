@@ -36,7 +36,7 @@ router.patch('/posts/:id', auth, async (req, res) => {
         const post = await Post.findOne({ _id, user: req.user._id })
 
         if (!post) {
-            res.status(404).send()
+            return res.status(404).send()
         }
         
         updates.forEach((update) => {
@@ -44,10 +44,10 @@ router.patch('/posts/:id', auth, async (req, res) => {
         })
 
         await post.save()
-        res.send(post)
+        return res.send(post)
 
     } catch (e) {
-        res.status(500).send(e)
+        return res.status(500).send(e)
     }
 })
 
