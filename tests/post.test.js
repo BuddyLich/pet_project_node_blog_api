@@ -36,3 +36,39 @@ test('Should not create new post without authentication', async () => {
         })
         .expect(401)
 })
+
+test('Should update the post1', async () => {
+    const postTitle = "Updated post title"
+    const postBody = "Updated post body"
+
+    await request(app)
+        .patch(`/posts/${post1._id}`)
+        .set('Authorization', `Bearer ${user1.tokens[0].token}`)
+        .send({
+            title: postTitle,
+            body: postBody
+        }).expect(200)
+})
+
+test('Should not update posts without authentication', async () => {
+    await request(app)
+        .patch(`/posts/${post1._id}`)
+        .send({
+            title: "test title",
+            body: "test body"
+        }).expect(401)
+})
+
+test('Should not update posts created by other user', async () => {
+    // proves that post1 is created by user1
+    const post = await Post.findById(post1._id)
+    expect(post.user).toEqual(user1._id)
+    
+    await request(app)
+        .patch(`/posts/${post1._id}`)
+        .set('Authorization', `Bearer ${user2.tokens[0].token}`)
+        .send({
+            title: "test title",
+            body: "test body"
+        }).expect(404)
+})
