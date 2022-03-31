@@ -72,7 +72,7 @@ test('Should not update posts created by other user', async () => {
         .send({
             title: "test title",
             body: "test body"
-        }).expect(404)
+        }).expect(401)
 })
 
 test('Should get all 5 posts from db', async () => {
@@ -116,4 +116,22 @@ test('Should get the 3rd and 4th posts through pagination', async () => {
 
     expect(response.body[0]._id).toBe(post3._id.toString())
     expect(response.body[1]._id).toBe(post4._id.toString())
+})
+
+test('Should delete posts that is created by the current user', async () => {
+    await request(app)
+        .delete(`/posts/${post1._id}`)
+        .set('Authorization', `Bearer ${user1.tokens[0].token}`)
+        .expect(200)
+    
+    const post = await Post.findById(post1._id)
+    expect(post).toBeNull()
+
+})
+
+test('Should not delete the post that is created by other users', async () => {
+    await request(app)
+        .delete(`/posts/${post1._id}`)
+        .set('Authorization', `Bearer ${user2.tokens[0].token}`)
+        .expect(401)
 })
