@@ -7,6 +7,8 @@ const {
     setupDB
 } = require('./fixtures/db')
 
+const posts = [post1, post2, post3, post4, post5]
+
 beforeEach(setupDB)
 
 test('Should create new post', async () => {
@@ -71,4 +73,47 @@ test('Should not update posts created by other user', async () => {
             title: "test title",
             body: "test body"
         }).expect(404)
+})
+
+test('Should get all 5 posts from db', async () => {
+    const response = await request(app).get('/posts').expect(200)
+    expect(response.body.length).toBe(5)
+})
+
+test('Should get three posts by user1', async () => {
+    const response = await request(app)
+        .get(`/posts?username=${user1.username}`)
+        .expect(200)
+
+    response.body.forEach((post) => {
+        expect(post.user.username).toBe(user1.username)
+    })
+})
+
+test('Should get all posts ascending', async () => {
+    const response = await request(app).get('/posts?sortBy=createdAt:asc').expect(200)
+
+    for (let i=0; i<5; i++) {
+        expect(response.body[i]._id).toBe(posts[i]._id.toString())
+    }
+})
+
+test('Should get all posts descending', async () => {
+    const response = await request(app).get('/posts?sortBy=createdAt:desc').expect(200)
+
+    for (let i=0; i<5; i++) {
+        expect(response.body[i]._id).toBe(posts[4-i]._id.toString())
+    }
+})
+
+test('Should limit the posts number the client gets', async () => {
+    const response = await request(app).get('/posts?limit=3').expect(200)
+    expect(response.body.length).toBe(3)
+})
+
+test('Should get the 3rd and 4th posts through pagination', async () => {
+    const response = await request(app).get('/posts?limit=2&skip=2').expect(200)
+
+    expect(response.body[0]._id).toBe(post3._id.toString())
+    expect(response.body[1]._id).toBe(post4._id.toString())
 })
