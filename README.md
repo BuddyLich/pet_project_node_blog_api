@@ -12,6 +12,8 @@ Users can register, login, logout, logout all (remove all tokens), update detail
 
 In terms of blogs, users can create/read/update/delete the post they created. 
 They can also get all posts by other users, get all all posts of their own, get all posts by a specific user by username. 
+
+
 -------------
 ## Routers:
 ### User routers with examples:
