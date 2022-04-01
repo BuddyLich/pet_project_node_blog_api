@@ -13,20 +13,103 @@ Users can register, login, logout, logout all (remove all tokens), update detail
 In terms of blogs, users can create/read/update/delete the post they created. 
 They can also get all posts by other users, get all all posts of their own, get all posts by a specific user by username. 
 
+### Routers:
+User router with examples:
+
+#### 1. POST - "/users"
+Request body: 
+
+
+    {
+        "email": "useremail@something.com",
+        "username": "anyusername",
+        "password": "anypswd123"
+    }
+
+Note: the password cannot contain the word "password" in lower or upper case. For instance, "testPassWord" would be an invalid one.
+
+#### 2. POST - "/users/login"
+Request body:
+
+
+    {
+        "email": "useremail@something.com",
+        "password": "anypswd123"
+    }
+
+Note: A token will be returned if the login is successful.
+
+#### 3. POST - "/users/logout"
+Request header:
+
+
+    {
+        "Authorization": "Bearer tokenThatReturnedInTheLoginRequest"
+    }
+
+#### 4. POST - "/users/logoutall"
+Request header: 
+
+
+    {
+        "Authorization": "Bearer tokenThatReturnedInTheLoginRequest"
+    }
+
+#### 5. GET - "/users/me"
+Request header: 
+
+
+    {
+        "Authorization": "Bearer tokenThatReturnedInTheLoginRequest"
+    }
+
+#### 6. GET - "/users/<otherUserName>"
+Note: This router can be used to read other user's profile without authentication.
+
+Assume that you need to check a user with the username "johnsmith". You only need to send a GET request to "/users/johnsmith"
+
+#### 7. PATCH - "/users/me"
+Request header: 
+
+
+    {
+        "Authorization": "Bearer tokenThatReturnedInTheLoginRequest"
+    }
+
+Request body: 
+
+
+    {
+        "email": "updatedEmail@something.com",
+        "username": "updatedUsername",
+        "password": "updatedPSWD123"
+    }
+
+#### 8. DELETE - "/users/me"
+Request header: 
+
+
+    {
+        "Authorization": "Bearer tokenThatReturnedInTheLoginRequest"
+    }
+
+
 ### Models:
-Post:
+Post fields:
 * title
 * body
-* createdAt
-* lastUpdatedAt
-* user
+* createdAt (created by mongoose)
+* lastUpdatedAt (created by mongoose)
+* user (objectId)
 
-User:
+User fields:
 * email
 * username
 * password
 * tokens
-* posts
+* posts (virtual field)
+* createdAt (created by mongoose)
+* lastUpdatedAt (created by mongoose)
 
 ### Other details:
 1. Pagination will be included for all "get all posts from xxx" feature
